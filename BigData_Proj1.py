@@ -6,15 +6,16 @@ Created on Tue Oct  4 15:24:39 2022
 """
 from py2neo import Graph, Node, Relationship, cypher
 
-#creates all nodes with unique label, need to edit to have nodes with correct label
+#Nodes have labels of [Disease, Gene, Compound, Anatomy]
+#Nodes have columns of id Ex:Compound::DB00661 and name Ex:Verapamil
+
 graph = Graph("bolt://localhost:11003", auth=("neo4j", "12345678"))
-#Requires disabling import security settings in Neo4j server; found in Neo4j Desktop
-#CREATE INDEX ON :Node(type);
+
 query = """
 LOAD CSV FROM "file:///C:/Users/merom/Desktop/Big_Data/nodes.tsv" AS line FIELDTERMINATOR "\t"
 CREATE (:Node { id: line[0], name: line[1], type: line[2]})
 """
-
+#These queries assign nodes with correct labels
 query2 = """
 MATCH (n:Node {type:'Anatomy'})
 SET n:Anatomy
@@ -42,6 +43,7 @@ SET n:Compound
 REMOVE n:Node
 REMOVE n.type;
 """
+
 print(graph.run(query).stats())
 print(graph.run(query2).stats())
 print(graph.run(query3).stats())
