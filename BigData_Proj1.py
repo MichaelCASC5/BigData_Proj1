@@ -8,6 +8,7 @@ from py2neo import Graph, Node, Relationship, cypher
 
 #creates all nodes with unique label, need to edit to have nodes with correct label
 graph = Graph("bolt://localhost:11003", auth=("neo4j", "12345678"))
+#Requires disabling import security settings in Neo4j server; found in Neo4j Desktop
 query = """
 LOAD CSV FROM "file:///C:/Users/merom/Desktop/Big_Data/nodes.tsv" AS line FIELDTERMINATOR "\t"
 CREATE (:Node { id: line[0], name: line[1], type: line[2]})
