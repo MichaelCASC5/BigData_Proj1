@@ -14,3 +14,12 @@ graph.run("MATCH (a:Person) RETURN a.name, a.born LIMIT 4").data()
  {'a.born': 1961, 'a.name': 'Laurence Fishburne'},
  {'a.born': 1960, 'a.name': 'Hugo Weaving'}]
 
+"""
+from py2neo import Graph
+from py2neo.matching import *
+g = Graph()
+nodes = NodeMatcher(g)
+keanu = nodes.match("Person", name="Keanu Reeves").first()
+keanu
+Node('Person', born=1964, name='Keanu Reeves')
+"""
