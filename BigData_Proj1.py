@@ -3,6 +3,7 @@
 Created on Tue Oct  4 15:24:39 2022
 
 @author: Viet Dinh
+@author: Michael Calle
 """
 from py2neo import Graph, Node, Relationship, cypher
 
