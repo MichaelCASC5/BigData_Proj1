@@ -3,23 +3,8 @@
 Created on Tue Oct  4 15:24:39 2022
 
 @author: Viet Dinh
-@author: Michael Calle
 """
-from py2neo import Graph, Node, Relationship
+from py2neo import Graph, Node, Relationship, cypher
 
-graph = Graph()
-graph.run("MATCH (a:Person) RETURN a.name, a.born LIMIT 4").data()
-[{'a.born': 1964, 'a.name': 'Keanu Reeves'},
- {'a.born': 1967, 'a.name': 'Carrie-Anne Moss'},
- {'a.born': 1961, 'a.name': 'Laurence Fishburne'},
- {'a.born': 1960, 'a.name': 'Hugo Weaving'}]
-
-"""
-from py2neo import Graph
-from py2neo.matching import *
-g = Graph()
-nodes = NodeMatcher(g)
-keanu = nodes.match("Person", name="Keanu Reeves").first()
-keanu
-Node('Person', born=1964, name='Keanu Reeves')
-"""
+graph = Graph("bolt://localhost:7687", auth=("neo4j", "12345678"))
+graph.run("MATCH (n) RETURN n")
