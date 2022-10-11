@@ -10,7 +10,7 @@ from py2neo import Graph, Node, Relationship, cypher
 graph = Graph("bolt://localhost:11003", auth=("neo4j", "12345678"))
 query = """
 LOAD CSV FROM "file:///C:/Users/merom/Desktop/Big_Data/nodes.tsv" AS line FIELDTERMINATOR "\t"
-CREATE (:Node { id: line[1], name: line[2], type: line[3]})
+CREATE (:Node { id: line[0], name: line[1], type: line[2]})
 """
 
 print(graph.run(query).stats())
