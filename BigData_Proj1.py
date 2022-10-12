@@ -63,9 +63,9 @@ CREATE CONSTRAINT id ON (n:Node) ASSERT n.id IS UNIQUE
 """
 
 #Queries only need to be ran once at start to create database; comment out after
+print(graph.run(nquery).stats())
 print(graph.run(constraintQuery).stats())
 print(graph.run(rquery).stats())
-print(graph.run(nquery).stats())
 print(graph.run(nquery2).stats())
 print(graph.run(nquery3).stats())
 print(graph.run(nquery4).stats())
@@ -76,4 +76,4 @@ print(graph.run(nquery5).stats())
 #print(graph.run("MATCH (n) DETACH DELETE n").stats())
 #print(graph.run("DROP CONSTRAINT ON (n:Node) ASSERT n.id IS UNIQUE").stats())
 
-
+#graph.run("MATCH (n:Gene)-[r:Relates]->(n2:Gene) WHERE n.id = 'Gene::125150' OR n2.id ='Gene::125150' RETURN n.id,r,n2.id")
