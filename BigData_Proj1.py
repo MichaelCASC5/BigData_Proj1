@@ -85,9 +85,27 @@ def deleteneodb():
 def neodiseaseinfo(disease_id:str):
     #NEED TO DO
     query = """
-        MATCH (d:Disease) WHERE d.id = $disease_id MATCH 
-        (c1:Compound)-[r1:Relates]->(d) WHERE r1.metaedge='CpD'
-        RETURN d.name, r1, c1.name
+        MATCH (d:Disease {id:$disease_id})  
+        MATCH (c1:Compound)-[r1:Relates{metaedge:'CpD'}]->(d) 
+        RETURN d.name AS disease,c1.name AS drug_treats,NULL AS drug_palliates, NULL AS gene_causes, NULL AS anatomy_loc
+        
+        UNION
+        
+        MATCH (d:Disease {id:$disease_id})
+        MATCH (c2:Compound)-[r2:Relates{metaedge:'CtD'}]->(d)
+        RETURN d.name AS disease,NULL AS drug_treats,c2.name AS drug_palliates, NULL AS gene_causes, NULL AS anatomy_loc
+        
+        UNION
+        
+        MATCH (d:Disease {id:$disease_id})
+        MATCH (d)-[r3:Relates{metaedge:'DaG'}]->(g:Gene)
+        RETURN d.name AS disease,NULL AS drug_treats,NULL AS drug_palliates,g.name AS gene_causes, NULL AS anatomy_loc
+        
+        UNION
+        
+        MATCH (d:Disease {id:$disease_id})
+        MATCH (d)-[r4:Relates{metaedge:'DlA'}]->(a:Anatomy)
+        RETURN d.name AS disease,NULL AS drug_treats,NULL AS drug_palliates,NULL AS gene_causes, a.name AS anatomy_loc
         """
     print(graph.run(query, disease_id = disease_id))
 
