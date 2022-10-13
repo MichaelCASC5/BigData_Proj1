@@ -9,9 +9,9 @@ Created on Tue Oct  4 15:24:39 2022
 #Must comment out dbms.directories.import=import else can't read tsv files in other dirs
 #Set dbms.memory.heap.max_size=3G (default 1G) to improve relationship creation speed
 
-
+import typer, pandas as pd, numpy as np
 from py2neo import Graph
-import typer
+
 
 app = typer.Typer()
 #Connects to Neo4j database
@@ -107,7 +107,14 @@ def neodiseaseinfo(disease_id:str):
         MATCH (d)-[r4:Relates{metaedge:'DlA'}]->(a:Anatomy)
         RETURN d.name AS disease,NULL AS drug_treats,NULL AS drug_palliates,NULL AS gene_causes, a.name AS anatomy_loc
         """
-    print(graph.run(query, disease_id = disease_id))
+    result_df = graph.run(query, disease_id = disease_id).to_data_frame()
+    with pd.option_context('display.max_rows', None,
+                       'display.max_columns', None,
+                       'display.precision', 3,
+                       'expand_frame_repr', False,
+                       ):
+        print(result_df)
+    
 
 #@app.command()
 #def neocmpdtreatdisease():
