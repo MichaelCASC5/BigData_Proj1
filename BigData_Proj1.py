@@ -82,14 +82,14 @@ def deleteneodb():
     print(graph.run("MATCH (n) DETACH DELETE n").stats())
     
 @app.command()
-def neodiseaseinfo():
+def neodiseaseinfo(disease_id:str):
     #NEED TO DO
-    print(graph.run("""MATCH (d:Disease) WHERE d.id = 'Disease::DOID:7148' MATCH 
-                       (c1:Compound)-[r1:Relates]->(d) WHERE r1.metaedge='CpD' MATCH 
-                       (c2:Compound)-[r2:Relates]->(d) WHERE r2.metaedge='CtD' MATCH 
-                       (d)-[r3:Relates]->(g:Gene) WHERE r3.metaedge='DaG' MATCH 
-                       (d)-[r4:Relates]->(a:Anatomy) WHERE r4.metaedge='DlA' 
-                       RETURN d.name,c1.name,c2.name,g.name,a.name"""))
+    query = """
+        MATCH (d:Disease) WHERE d.id = $disease_id MATCH 
+        (c1:Compound)-[r1:Relates]->(d) WHERE r1.metaedge='CpD'
+        RETURN d.name, r1, c1.name
+        """
+    print(graph.run(query, disease_id = disease_id))
 
 #@app.command()
 #def neocmpdtreatdisease():
