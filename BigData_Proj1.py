@@ -116,16 +116,34 @@ def neodiseaseinfo(disease_id:str):
         print(result_df)
     
 
-#@app.command()
-#def neocmpdtreatdisease():
-    #ADD QUERY
+@app.command()
+def neocmpdtreatdisease(disease_id:str):
+    #QUERY TO DO
+    query = """
+        MATCH (d:Disease {id:$disease_id})
+        MATCH (d)-[:Relates{metaedge:'DlA'}]->(a:Anatomy)-[:Relates{metaedge:'AuG'}]->(g:Gene) 
+        MATCH (c1:Compound)-[:Relates*{metaedge:'CrC'}]->(c2:Compound)-[:Relates{metaedge:'CdG'}]->(g)
+        WHERE NOT (c2)-[:Related{metaedge:'CtD'}]->(d)
+        RETURN c2.name AS drug
+        
+        UNION 
+        
+        MATCH (d:Disease {id:$disease_id})
+        MATCH (d)-[:Relates{metaedge:'DlA'}]->(a:Anatomy)-[:Relates{metaedge:'AdG'}]->(g:Gene) 
+        MATCH (c1:Compound)-[:Relates*{metaedge:'CrC'}]->(c2:Compound)-[:Relates{metaedge:'CuG'}]->(g)
+        WHERE NOT (c2)-[:Related{metaedge:'CtD'}]->(d)
+        RETURN c2.name AS drug
+        """
     
-#REFERENCE
-#@app.command()
-#def hello(name:str, iq:int, display_iq:bool = True):
-#    print(f"hello {name}")
-#    if(display_iq):
-#        print(f"your iq is: {iq}")
+    result_df = graph.run(query, disease_id = disease_id).to_data_frame()
+    with pd.option_context('display.max_rows', None,
+                       'display.max_columns', None,
+                       'display.precision', 3,
+                       'expand_frame_repr', False,
+                       ):
+        print(result_df)
+    
+
     
 if __name__ == "__main__":
     app()
