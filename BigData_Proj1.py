@@ -117,7 +117,7 @@ def neodiseaseinfo(disease_id:str):
     
 
 @app.command()
-def neocmpdtreatdisease(disease_id:str):
+def neocmpdstreatdisease(disease_id:str):
     query = """
         MATCH (d)-[:Relates{metaedge:'DlA'}]->(a:Anatomy)-[:Relates{metaedge:'AuG'}]->(g:Gene)
         MATCH (c1:Compound)-[:Relates{metaedge:'CdG'}]->(g)
@@ -159,8 +159,6 @@ def neocmpdtreatdisease(disease_id:str):
                        'expand_frame_repr', False,
                        ):
         print(result_df)
-    
-
     
 if __name__ == "__main__":
     app()
