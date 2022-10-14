@@ -118,21 +118,38 @@ def neodiseaseinfo(disease_id:str):
 
 @app.command()
 def neocmpdtreatdisease(disease_id:str):
-    #QUERY TO DO
     query = """
+        MATCH (d)-[:Relates{metaedge:'DlA'}]->(a:Anatomy)-[:Relates{metaedge:'AuG'}]->(g:Gene)
+        MATCH (c1:Compound)-[:Relates{metaedge:'CdG'}]->(g)
+        WHERE NOT (c1)-[:Related{metaedge:'CtD'}]->(d)
+        RETURN DISTINCT c1.name AS drug1, NULL AS drug2, NULL AS drug3, NULL AS drug4
+        ORDER BY c1.name
+        
+        UNION
+        
         MATCH (d:Disease {id:$disease_id})
         MATCH (d)-[:Relates{metaedge:'DlA'}]->(a:Anatomy)-[:Relates{metaedge:'AuG'}]->(g:Gene) 
-        MATCH (c1:Compound)-[:Relates*{metaedge:'CrC'}]->(c2:Compound)-[:Relates{metaedge:'CdG'}]->(g)
+        MATCH (c1:Compound)-[:Relates{metaedge:'CrC'}]->(c2:Compound)-[:Relates{metaedge:'CdG'}]->(g)
         WHERE NOT (c2)-[:Related{metaedge:'CtD'}]->(d)
-        RETURN c2.name AS drug
+        RETURN DISTINCT NULL AS drug1, c1.name AS drug2, NULL AS drug3, NULL AS drug4
+        ORDER BY c1.name
         
-        UNION 
+        UNION  
+        
+        MATCH (d)-[:Relates{metaedge:'DlA'}]->(a:Anatomy)-[:Relates{metaedge:'AdG'}]->(g:Gene)
+        MATCH (c1:Compound)-[:Relates{metaedge:'CuG'}]->(g)
+        WHERE NOT (c1)-[:Related{metaedge:'CtD'}]->(d)
+        RETURN DISTINCT NULL AS drug1, NULL AS drug2, c1.name AS drug3, NULL AS drug4
+        ORDER BY c1.name
+        
+        UNION
         
         MATCH (d:Disease {id:$disease_id})
         MATCH (d)-[:Relates{metaedge:'DlA'}]->(a:Anatomy)-[:Relates{metaedge:'AdG'}]->(g:Gene) 
-        MATCH (c1:Compound)-[:Relates*{metaedge:'CrC'}]->(c2:Compound)-[:Relates{metaedge:'CuG'}]->(g)
+        MATCH (c1:Compound)-[:Relates{metaedge:'CrC'}]->(c2:Compound)-[:Relates{metaedge:'CuG'}]->(g)
         WHERE NOT (c2)-[:Related{metaedge:'CtD'}]->(d)
-        RETURN c2.name AS drug
+        RETURN DISTINCT NULL AS drug1, NULL AS drug2, NULL AS drug3, c1.name AS drug4
+        ORDER BY c1.name
         """
     
     result_df = graph.run(query, disease_id = disease_id).to_data_frame()
